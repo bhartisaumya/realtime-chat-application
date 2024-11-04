@@ -23,6 +23,8 @@ export class MessageHandler{
 
     register(ws: WebSocket, message: IMessage){
         const {userId} = message
+        console.log(`User Registerd: ${userId}`)
+        
         this.clients.set(userId, ws)
     }
 
@@ -56,6 +58,8 @@ export class MessageHandler{
         const roomClients = this.chatRoomClients.get(chatRoom)
 
         if(!roomClients){
+            console.log(`Created new chatRoom: ${chatRoom}`)
+
             this.chatRoomClients.set(chatRoom, new Set())
             this.chatRoomClients.get(chatRoom)?.add(ws)
         }

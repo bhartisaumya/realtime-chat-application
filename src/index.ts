@@ -4,6 +4,9 @@ import {WebSocket, WebSocketServer} from 'ws'
 import {IMessage, MessageHandler} from './messageHandler'
 
 const app = express()
+app.use(express.json())
+app.use(express.urlencoded({extended : true}));
+
 
 app.get('/foo', (req, res) => {
     res.send('bar')
@@ -24,9 +27,9 @@ wss.on('connection', (ws) => {
     })
 
     ws.on('message', (data) => {
-        const message: IMessage = JSON.parse(data.toString())
+        const message: IMessage = JSON.parse(data.toString('utf-8').replace(/'/g, '"'));
 
-        switch(message.type){
+        switch(message?.type){
             case 'register':
                 messageHandler.register(ws, message)
                 break;
@@ -45,7 +48,7 @@ wss.on('connection', (ws) => {
                 break;
 
             default:
-                console.log(`Error in the message format: ${message}`)
+                console.log(`Error in the message format: ${message.type}`)
 
         }
     })
